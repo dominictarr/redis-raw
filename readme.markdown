@@ -37,10 +37,8 @@ returns a redis client, callback is optional.
 `command` _must_ be an array of strings.  
 commands are described in the [redis documentation](redis.io/commands)
 
-When the `reply` is a single value, `reply` will be a primitive.
-when redis returns many values, `reply` will be an array.
-
-`err` will be `null` or a `string`.
+`reply` may be a primitive or an array.
+if `err` is from redis, `err` will be a `string`.
 
  * RedisRaw does not stringify objects for you. <em>do your own json</em>
 
@@ -53,8 +51,7 @@ it goes into subscribe mode and non Pub/Sub commands will callback an error.
 
 ### UNSUBSCRIBE & PUNSUBSCRIBE
 
-calls to [UNSUBSCRIBE]((http://redis.io/commands/unsubscribe)  
-[PUNSUBSCRIBE]((http://redis.io/commands/punsubscribe) will callback `(error, [events, subscriptionCount])`
+calls to [UNSUBSCRIBE]((http://redis.io/commands/unsubscribe) [PUNSUBSCRIBE]((http://redis.io/commands/punsubscribe) will callback `(error, [events, subscriptionCount])`
 
 where `events` is the list of events that you have unsubscribed to.  
 
@@ -79,10 +76,12 @@ see [http://redis.io/topics/pubsub](http://redis.io/topics/pubsub)
 
 ```
 
-PSUBSCRIBE supports all standard [glob patterns](http://en.wikipedia.org/wiki/Glob_(programming)).
+[PSUBSCRIBE](http://redis.io/commands/psubscribe) supports all standard [glob patterns](http://en.wikipedia.org/wiki/Glob_(programming\)).
 
 ## 'error', 'close', end and destroy
 
+redis raw does not manage the connection for you,  
 Users should directly access the underlieing [net.Socket](http://nodejs.org/api/net.html#net.Socket)  
 and add listeners and end or destroy the connection there.  
-(or, let the server close the connection `r.req(['QUIT'], callback)`)
+
+(also, you can let the server close the connection `r.req(['QUIT'], callback)`)
