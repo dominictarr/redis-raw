@@ -125,7 +125,6 @@ u.each(examples, function (example, name) {
     //there is a bug in parallel.map if there is only one iteration and it errors...
     ctrl.parallel.map(r.req)
     (example.input, function (err, actual) {
-      console.error(err, actual)
       r.socket.end()
       r.socket.once('end', test.done)
 
