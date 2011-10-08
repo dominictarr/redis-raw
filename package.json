@@ -1,0 +1,13 @@
+{ "name": "redis-raw"
+, "version": "0.0.0"
+, "description": "nodejs redis client with no extras"
+, "homepage": "http://github.com/dominictarr/redis-raw"
+, "repository": 
+  { "type": "git"
+  , "url": "https://github.com/dominictarr/redis-raw.git" }
+, "dependencies": {
+    "redis": "~0.6"
+  }
+, "devDependencies": {}
+, "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://bit.ly/dominictarr)"
+, "scripts": { "test": "meta-test test/*.js" } }
