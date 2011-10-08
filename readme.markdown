@@ -66,6 +66,7 @@ where `events` is the list of events that you have unsubscribed to.
 
 capture messages that you are subscribed to by overwriting `redis.onMessage` and `redis.onPMessage`
 see [http://redis.io/topics/pubsub](http://redis.io/topics/pubsub)
+
 ``` js
 
   var Redis = require('redis-raw').Redis
@@ -73,36 +74,15 @@ see [http://redis.io/topics/pubsub](http://redis.io/topics/pubsub)
 
   r.req(['PSUBSCRIBE', '*'], function () {...})
   
-  r.onMessage = function (event, message)
-  r.onPMessage = function (event, pattern, message)
+  r.onMessage = function (event, message) {...}
+  r.onPMessage = function (event, pattern, message) {...}
 
 ```
 
-PSUBSCRIBE supports all [glob patterns](http://en.wikipedia.org/wiki/Glob_(programming)).
+PSUBSCRIBE supports all standard [glob patterns](http://en.wikipedia.org/wiki/Glob_(programming)).
 
-see 
+## 'error', 'close', end and destroy
 
-## 'error', 'close', and closing the connection.
-
-users should directly access the underling [net.Socket](http://nodejs.org/api/net.html#net.Socket)  
+Users should directly access the underlieing [net.Socket](http://nodejs.org/api/net.html#net.Socket)  
 and add listeners and end or destroy the connection there.  
 (or, let the server close the connection `r.req(['QUIT'], callback)`)
-
-``` js
-var Redis = require('redis-raw').Redis
-  , r = Redis(port, host, callback)
-
-  //listen for connection closing
-  r.socket.on('close', function () {...})
-
-  //end connection
-  r.socket.end()
-  //this will half close the connection, 
-  //redis will still write replys to any outstanding requests
-  //and then close the connection.
-
-  //force the connection to close immediately
-  r.socket.destroy()
-
-```
-
