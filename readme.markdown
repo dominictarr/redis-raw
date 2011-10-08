@@ -36,6 +36,9 @@ commands are described in the [redis documentation](redis.io/commands)
 `reply` may be a primitive or an array.
 if `err` is from redis, `err` will be a `string`.
 
+If there is a unexpected disconnection,  
+all callbacks that have not been answered will get an error.
+
  * RedisRaw does not stringify objects for you. <em>do your own json</em>
 
 ## Pub Sub
@@ -53,7 +56,7 @@ where `events` is the list of events that you have unsubscribed to.
 
 > redis has strange behavior with the handling of these commands, and may reply many times.  
 > however, RedisRaw keeps it's own count of subscriptions, and will callback only once, in the normal nodejs way.  
-> (it was my frustration with other redis clients on this matter that decided me to write this package)
+> (it was my frustration with other redis clients on this matter that decided me to write this package)  
 > i've opened an issue about this here: https://github.com/antirez/redis/issues/123
 
 ### .onMessage & .onPMessage
