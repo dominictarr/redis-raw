@@ -1,5 +1,5 @@
 { "name": "redis-raw"
-, "version": "0.0.0"
+, "version": "0.0.1"
 , "description": "nodejs redis client with no extras"
 , "homepage": "http://github.com/dominictarr/redis-raw"
 , "repository": 
