@@ -1,9 +1,10 @@
 
-var net = require('net')
-  , Parser = require('redis/lib/parser/javascript').Parser
-  , Stream = require('stream').Stream
-  , es = require('event-stream')
-  , u = require('ubelt')
+const net = require('net')
+    , Parser = require('redis/lib/parser/javascript').Parser
+    , Stream = require('stream').Stream
+    , es = require('event-stream')
+    , u = require('ubelt')
+
 const CLRF = '\r\n'
 
 exports.Parser = Parser
@@ -14,9 +15,10 @@ exports.ParseStream = ParseStream
 exports.RedisStream = RedisStream
 
 function requestify (cmd) {
-    var l = cmd.length
-    , i = 0
+  var l = cmd.length
     , out = new Array(l*2 + 1)
+  var i = 0
+
   out[0] = '*'+l
   
   while(i < l) {
@@ -31,7 +33,9 @@ function requestify (cmd) {
 
 function RedisStream () { //same args as net.createConnection  
   var stream  = net.createConnection.apply(null, arguments)
-  var _write = stream.write
+    , _write = stream.write
+
+  stream.setKeepAlive(true, 1000)
   stream.write = function (command) {
     return _write.call(stream, requestify(command))
   }
@@ -57,28 +61,18 @@ function ParseStream () {
   parser.on('reply error', function (mess) { emit('-'+mess ) }) //errors should start with '-'
   return stream
 }
- /*
-es.connect(
-  es.readArray([
-    ['SUBSCRIBE', 'x', 'y', 'z'],
-    ['PSUBSCRIBE', 'x', 'y', 'z'],
-    ['UNSUBSCRIBE']
-  ]),
-  es.log('<<'),
-  RedisStream (6379),
-  ParseStream (),
-  es.log('>>')
-)*/
 
 
 function Redis () {
   var r, p
     , client
-    , queue = []
-    , callback = arguments[arguments.length - 1]
+    , flushed = false
+
+  var
+    queue = []
+  , callback = arguments[arguments.length - 1]
 
   if('function' === typeof callback) {
-    console.error('CALLBACJ', callback)
     arguments[arguments.length - 1] = 
       function (err, socket) {
         callback(err, client)
@@ -100,6 +94,17 @@ p = ParseStream ()
       
       to get the correct callbacks need to calc how many callbacks are expected.
       */
+  function flush (err) {
+    if(flushed) return
+    flushed = true
+    err = err || new Error('connection closed unexpectedly')
+    while(queue.length)
+      queue.shift()(err)
+  }
+
+  r.once('close', flush)
+  r.once('error', flush)
+
   client = {
     expecting: function (args) {
       switch (args[0]) {
@@ -163,9 +168,9 @@ p = ParseStream ()
   p.on('data', function (reply) {
     switch (reply[0]) {
       case 'message':
-        return client.onPMessage.apply(null, reply.slice(1))
-      case 'pmessage':
         return client.onMessage.apply(null, reply.slice(1))
+      case 'pmessage':
+        return client.onPMessage.apply(null, reply.slice(1))
     }
     var cb = queue.shift()
     if(Array.isArray(reply)) {
