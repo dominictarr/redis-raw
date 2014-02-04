@@ -45,12 +45,12 @@ all callbacks that have not been answered will get an error.
 
 ### SUBSCRIBE & PSUBSCRIBE
 
-when redis gets a [SUBSCRIBE]((http://redis.io/commands/subscribe) or [PSUBSCRIBE](http://redis.io/commands/psubscribe) command,
+when redis gets a [SUBSCRIBE](http://redis.io/commands/subscribe) or [PSUBSCRIBE](http://redis.io/commands/psubscribe) command,
 it goes into subscribe mode and non Pub/Sub commands will callback an error.
 
 ### UNSUBSCRIBE & PUNSUBSCRIBE
 
-calls to [UNSUBSCRIBE]((http://redis.io/commands/unsubscribe) [PUNSUBSCRIBE]((http://redis.io/commands/punsubscribe) will callback `(error, [events, subscriptionCount])`
+calls to [UNSUBSCRIBE](http://redis.io/commands/unsubscribe) [PUNSUBSCRIBE](http://redis.io/commands/punsubscribe) will callback `(error, [events, subscriptionCount])`
 
 where `events` is the list of events that you have unsubscribed to.
 
@@ -76,7 +76,7 @@ r.onPMessage = function (event, pattern, message) {...}
 
 ```
 
-[PSUBSCRIBE](http://redis.io/commands/psubscribe) supports all standard [glob patterns](http://en.wikipedia.org/wiki/Glob_(programming\)).
+[PSUBSCRIBE](http://redis.io/commands/psubscribe) supports all standard [glob patterns](http://en.wikipedia.org/wiki/Glob_(programming)).
 
 ## 'error', 'close', .end() and .destroy()
 
